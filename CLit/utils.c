@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "litlib.h"
+#include "ext/litlib.h"
 #include "clit.h"
 #include "utils.h"
 

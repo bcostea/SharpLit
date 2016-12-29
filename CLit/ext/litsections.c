@@ -31,7 +31,7 @@
 #include <string.h>
 #include "litlib.h"
 #include "litinternal.h"
-#include "lzx.h"
+#include "newlzx/lzx.h"
 
 static int decompress_section(lit_file * litfile, char * section_name,
     U8 * pControl, int sizeControl, U8 * pContent, int sizeContent, 
@@ -138,7 +138,7 @@ int lit_i_cache_section(lit_file * litfile, section_type * pSection )
     const char  *guid;
     int         idxTransform, idxControl, nbytes;
     U8          * pList = NULL, * pContent = NULL, *ptr = NULL;
-    U8          * pControl;
+    U8          * pControl = NULL;
     int         sizeTransform, sizeContent, sizeControl, nDwords;
     
     path = lit_i_strmerge(storage_string,pSection->name,transform_string,0);

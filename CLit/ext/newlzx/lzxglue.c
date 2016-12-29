@@ -28,7 +28,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include "litlib.h"
+#include "../litlib.h"
 #include "mspack.h"
 #include "lzx.h"
 

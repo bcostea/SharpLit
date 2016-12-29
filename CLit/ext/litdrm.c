@@ -26,8 +26,8 @@
 #include <time.h>
 #include "litlib.h"
 #include "litinternal.h"
-#include "d3des.h"
-#include "sha.h"
+#include "des/d3des.h"
+#include "sha/sha.h"
 
 static int calculate_deskey(lit_file *, U8 key[8]);
 static void hash_bytes(SHA_CTX * pctx, U8 * pdata, int length, int padding);

@@ -37,7 +37,7 @@
 #include <unistd.h>
 #endif
 
-#include "litlib.h"
+#include "ext/litlib.h"
 
 
 extern int drm5_callback(void *, U8 *, int size);
@@ -116,6 +116,7 @@ int main(int argc, char ** argv)
     int         task = 0;
     int		    base, i;
     int         done_args = 0;
+	errno_t err;
 
     /* Save the current directory for later */
     strncpy(dir_program, argv[0], MAX_PATH-1);
@@ -170,8 +171,9 @@ int main(int argc, char ** argv)
 
     output = argv[base+2];
     readingFilename = filename;
-    fh = fopen(filename, "rb");
-    if (!fh) {
+
+    err = fopen_s(&fh, filename, "rb");
+    if (err!=0) {
         lit_error(ERR_LIBC|ERR_R,"Unable to open file.");
         return -1;
     }

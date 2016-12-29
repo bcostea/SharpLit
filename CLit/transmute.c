@@ -22,7 +22,7 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
-#include "litlib.h"
+#include "ext/litlib.h"
 
 extern char * writingFilename;
 
@@ -39,10 +39,12 @@ int transmute_lit(lit_file * litfile, char * newlitfile, char * inscription)
     int     drm_size = 0;
     FILE    * fOut;
     lit_file outlit;
+	errno_t err;
 
     writingFilename = newlitfile;
-    fOut = fopen(newlitfile,"wb");
-    if (!fOut) {
+	err = fopen_s(&fOut, newlitfile,"wb");
+	
+    if (err != 0) {
         lit_error(ERR_W|ERR_LIBC,"Unable to open \"%s\"!", newlitfile);
         return -1;
     }

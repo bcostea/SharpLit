@@ -22,7 +22,7 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
-#include "litlib.h"
+#include "ext/litlib.h"
 
 extern void hexdump( unsigned char * ptr, int size );
 /*

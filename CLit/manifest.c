@@ -23,7 +23,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "litlib.h"
+#include "ext/litlib.h"
 #include "manifest.h"
 #include "utils.h"
 

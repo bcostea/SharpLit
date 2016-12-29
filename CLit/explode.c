@@ -25,7 +25,7 @@
 #include <stdlib.h> 
 #include <string.h>
 #include "clit.h"
-#include "litlib.h"
+#include "ext/litlib.h"
 #include "manifest.h"
 #include "utils.h"
 
@@ -284,11 +284,13 @@ U8 * create_file_path(U8 * pathOutput, U8 * pathFile)
             
         sTemp = strmerge(pathOutput, sDirname, NULL);
         if (sTemp) {
-            f = fopen(sTemp, "r");
-            if (f) { error = 1; }
+			errno_t err;
+
+			err = fopen_s(&f, sTemp, "r");
+            if (err!=0) { error = 1; }
             else {
-                f = fopen(sTemp,"w");
-                if (f) { fclose(f); error = 0; } 
+                err = fopen_s(&f, sTemp,"w");
+                if (err==0) { fclose(f); error = 0; } 
                 else { error = 2; }
             }
         } else { error = -1; break; }
@@ -503,9 +505,10 @@ int  write_htmlish_file(lit_file * litfile, char * source_name,
             if (status != 0) { status = -20; break;}
             pmanifest = &relative_manifest;
         }
-     
-        fOut = fopen(pathExternal, "w");
-        if (!fOut) {
+		errno_t err;
+
+		err = fopen_s(&fOut, pathExternal, "w");
+        if (err != 0) {
             lit_error(ERR_LIBC|ERR_W,"fopen(%s) failed!", pathExternal);
             status =  -1;
             break;
@@ -551,12 +554,13 @@ int write_raw_file(lit_file * litfile,char * pathInternal, char * pathExternal)
     int     nbytes;
     U8      * p;
     FILE * fOut;
+	errno_t err;
 
     status = lit_get_file(litfile,pathInternal,&p,&nbytes);
     if (status) return status;
 
-    fOut = fopen(pathExternal, "wb");
-    if (!fOut) {
+    err = fopen_s(&fOut, pathExternal, "wb");
+    if (err!=0) {
         free(p);
         lit_error(ERR_LIBC|ERR_W,"fopen(%s) failed!", pathExternal);
         return -1;

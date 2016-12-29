@@ -31,11 +31,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include "litlib.h"
+#include "ext/litlib.h"
 #include "utils.h"
-#include "d3des.h"
+#include "ext/des/d3des.h"
 
-#include <tommath.h>
+#include "ext/tom/tommath.h"
 
 static const char * license_string = "/DRMStorage/Licenses/EUL";
 
