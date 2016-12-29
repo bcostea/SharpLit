@@ -284,10 +284,10 @@ U8 * create_file_path(U8 * pathOutput, U8 * pathFile)
             
         sTemp = strmerge(pathOutput, sDirname, NULL);
         if (sTemp) {
-			errno_t err;
+			errno_t err = 0;
 
 			err = fopen_s(&f, sTemp, "r");
-            if (err!=0) { error = 1; }
+            if (err==0) { error = 1; }
             else {
                 err = fopen_s(&f, sTemp,"w");
                 if (err==0) { fclose(f); error = 0; } 

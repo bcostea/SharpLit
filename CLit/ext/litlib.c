@@ -426,7 +426,7 @@ int lit_put_file(lit_file * litfile, const char * name, U8 *ptr, int size,
         new->size = size;
         new->section = section;
         new->namelen = (int)strlen(name);
-        strcpy(&new->name, name);
+        strcpy_s(&new->name, strlen(name), name);
         new->next = prev->next;
         prev->next = new;
     }

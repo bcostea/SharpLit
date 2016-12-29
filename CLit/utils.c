@@ -44,9 +44,9 @@ char * strmerge(char * head, char * body, char * tail)
         return NULL;
     }
     str[0] = '\0';
-    if (head) strcat(str,head);
-    if (body) strcat(str,body);
-    if (tail) strcat(str,tail);
+    if (head) strcat_s(str, len, head);
+    if (body) strcat_s(str, len, body);
+    if (tail) strcat_s(str, len, tail);
     return str;
 }
 

@@ -327,7 +327,7 @@ int lit_reconstitute_html(U8 * pHtml, int base, int nBytes, int html_type,
                     tag_name = malloc(20);
                     if (!tag_name) goto malloc_error;
                     dynamic_tag++;
-                    sprintf(tag_name, "?%ld?", tag);
+                    sprintf_s(tag_name,sizeof(tag_name), "?%ld?", tag);
 
                     /* FUTUREFIX - This should be a "warning"?  */
                     lit_error(ERR_R,
@@ -474,7 +474,7 @@ int lit_reconstitute_html(U8 * pHtml, int base, int nBytes, int html_type,
 "Unrecognized attribute (0x%08lx) at position %ld.\n"
 "\tCurrently processing tag: \"%s\".  Depth is %d.  ",
                         c, index, tag_name, depth);
-                    sprintf(numbuf,"?%ld?",c);
+                    sprintf_s(numbuf, sizeof(numbuf), "?%ld?",c);
                     WRITE_CHAR(' ');
                     WRITE_STRING(numbuf);
                 }
@@ -528,7 +528,7 @@ int lit_reconstitute_html(U8 * pHtml, int base, int nBytes, int html_type,
             if (char_count == 0xfffe) {
                 if (!in_censorship) {
                     /* Yes! There is no opening quote. */
-                    sprintf(numbuf,"%ld\"",c-1);
+                    sprintf_s(numbuf, sizeof(numbuf), "%ld\"",c-1);
                     WRITE_STRING(numbuf); 
                 }
                 in_censorship = 0;
@@ -707,7 +707,7 @@ int write_entity(U32 c, HTMLWRITEFCN htmlwrite, void * write_data)
         }
         else  {
             /* 32 bit value, so assumed to never be more than 10! */
-            len = sprintf(ent_buffer,"&#%ld;",c);
+            len = sprintf_s(ent_buffer, sizeof(ent_buffer), "&#%ld;",c);
         }
         return htmlwrite(write_data,ent_buffer,len);
     }

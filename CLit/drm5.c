@@ -46,9 +46,10 @@ U8 * read_whole_file(char * filename, int * size_ptr)
     U8 *mem = NULL;
     size_t size;
     FILE    *f;
-    
-    f = fopen(filename, "rb");
-    if (!f) {
+	errno_t err;
+
+	err = fopen_s(&f, filename, "rb");
+    if (err!=0) {
         lit_error(ERR_LIBC,"WARNING: Unable to open file \"%s\".", filename);
         return NULL;
     }
@@ -258,8 +259,8 @@ char *get_element(char * tag, char * str)
         lit_error(ERR_R, "Memory allocation failed in get_element()"); 
         return NULL;
     }
-    strcpy(tmptag, "<");
-    strcat(tmptag, tag);
+    strcpy_s(tmptag, strlen(tmptag) + 1, "<");
+    strcat_s(tmptag, len + 4,  tag);
 
     while (1) {
         if ((start = strstr(str, tmptag)) == NULL)
@@ -268,9 +269,9 @@ char *get_element(char * tag, char * str)
             break;
         str = start + len + 1;
     }
-    strcpy(tmptag, "</");
-    strcat(tmptag, tag);
-    strcat(tmptag, ">");
+    strcpy_s(tmptag, strlen(tmptag) + 3, "</");
+    strcat_s(tmptag, strlen(tmptag) + strlen(tag), tag);
+    strcat_s(tmptag, strlen(tmptag) + 1, ">");
     end = strstr(str, tmptag);
     if (end == NULL) {
         goto exit;

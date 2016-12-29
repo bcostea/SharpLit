@@ -52,9 +52,10 @@ extern int drm5_callback(void *, U8 *, int size);
 #define MAX_PATH PATH_MAX
 #endif
 
-extern int display_lit(lit_file * litfile, int public_only);
+/*extern int display_lit(lit_file * litfile, int public_only);
 extern int explode_lit(lit_file * litfile, char * litName, char * pathOutput);
 extern int transmute_lit(lit_file * litfile, char * newlitfile, char * );
+*/
 static U8 * readat(void * v, U32 offset, int size);
 /* Must not be static, linked into litlib */
 void lit_error(int what, char * fmt, ...); 
@@ -119,8 +120,7 @@ int main(int argc, char ** argv)
 	errno_t err;
 
     /* Save the current directory for later */
-    strncpy(dir_program, argv[0], MAX_PATH-1);
-    dir_program[MAX_PATH] = '\0';
+    strncpy_s(dir_program, MAX_PATH, argv[0], MAX_PATH-1);
     for (i = strlen(dir_program); i >= 0; i--) {
         if ((dir_program[i] == '/') || (dir_program[i] == '\\'))  {
             dir_program[i+1] = '\0'; break;
@@ -161,8 +161,7 @@ int main(int argc, char ** argv)
     }
     filename = argv[base+1];
 
-    strncpy(dir_lit_file, filename, MAX_PATH-1);
-    dir_lit_file[MAX_PATH-1] = '\0';
+    strncpy_s(dir_lit_file, MAX_PATH, filename, MAX_PATH-1);
     for (i = strlen(dir_lit_file); i >= 0; i--) {
         if ((dir_lit_file[i] == '/') || (dir_lit_file[i] == '\\'))  {
             dir_lit_file[i+1] = '\0'; break;
@@ -246,8 +245,8 @@ int main(int argc, char ** argv)
                     fprintf(stderr,"Malloc(%d) failed!\n", strlen(output) + 1);
                     exit(-1);
                 }
-                strcpy(path, output);
-                strcat(path, "/");
+                strcpy_s(path, strlen(output), output);
+				strcat_s(path, strlen(path) + 1,  "/");
                 output = path;
             }
             task = 1;

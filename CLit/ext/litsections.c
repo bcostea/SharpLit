@@ -61,7 +61,7 @@ const char * guid2string(U8 * guid)
 {
     static char guid_buffer[7+8+4+4+4+12+1];
 
-    sprintf(guid_buffer, "{%08lX-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}",
+    sprintf_s(guid_buffer, sizeof(guid_buffer), "{%08lX-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}",
         (U32)READ_U32(guid), (U16)READ_U16((guid+4)),
         (U16)READ_U16((guid+6)),
         (U8)*(guid+8), (U8)*(guid+9), /*-*/
