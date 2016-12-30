@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CLitWrapper")]
+[assembly: AssemblyTitle("SharpLitEpubExporter")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CLitWrapper")]
+[assembly: AssemblyProduct("SharpLitEpubExporter")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("a5999067-1454-427b-a3e3-010c55b9d851")]
+[assembly: Guid("7483ad06-a092-4e4e-9a69-3c0fa0eb07bb")]
 
 // Version information for an assembly consists of the following four values:
 //

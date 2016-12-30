@@ -9,7 +9,7 @@ using CLitWrapper;
 
 namespace SharpLit
 {
-    class EpubExporter
+    public class EpubExporter
     {
         public const string ContainerContent = @"<?xml version='1.0'?>
 <container version = '1.0' xmlns = 'urn:oasis:names:tc:opendocument:xmlns:container'>
@@ -35,7 +35,7 @@ namespace SharpLit
 
             System.Console.Out.WriteLine("opf file in " + opfFileName);
 
-            ZipFile.CreateFromDirectory(epubDirectory, EpubPath, CompressionLevel.Fastest, true);
+            ZipFile.CreateFromDirectory(epubDirectory, EpubPath, CompressionLevel.Optimal, false);
 
         }
 
