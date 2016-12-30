@@ -67,44 +67,33 @@ char   dir_lit_file[MAX_PATH];
 char * key_file = NULL;
 
 
-int explode(char * litPath, char * outputPath)
+int explode(char * fileName, char * output)
 {
     int         status;
     char        * path = NULL;
     lit_file    lit;
-    char        * filename, * output, * inscription, c;
+    char        c;
     FILE        * fh;
     struct stat statbuf;
-    int         task = 0;
     int		    base, i;
     int         done_args = 0;
 	errno_t err;
-
-    /* Save the current directory for later */
-    strncpy_s(dir_program, MAX_PATH, litPath, MAX_PATH-1);
-    for (i = strlen(dir_program); i >= 0; i--) {
-        if ((dir_program[i] == '/') || (dir_program[i] == '\\'))  {
-            dir_program[i+1] = '\0'; break;
-        }
-    }
-
-    filename = litPath;
-
-    strncpy_s(dir_lit_file, MAX_PATH, filename, MAX_PATH-1);
+    
+    strncpy_s(dir_lit_file, MAX_PATH, fileName, MAX_PATH-1);
     for (i = strlen(dir_lit_file); i >= 0; i--) {
         if ((dir_lit_file[i] == '/') || (dir_lit_file[i] == '\\'))  {
             dir_lit_file[i+1] = '\0'; break;
         }
     }
 
-    output = outputPath;
-    readingFilename = filename;
+    readingFilename = fileName;
 
-    err = fopen_s(&fh, filename, "rb");
+    err = fopen_s(&fh, fileName, "rb");
     if (err!=0) {
         lit_error(ERR_LIBC|ERR_R,"Unable to open file.");
         return -1;
     }
+
     memset(&lit, 0, sizeof(lit));
     lit.file_pointer = (void *)fh;
     lit.readat       = readat;
@@ -148,18 +137,12 @@ int explode(char * litPath, char * outputPath)
             c = output[strlen(output) - 1];
             if ((c == '/') || (c == '\\')) {
                 status = mkdir(output,0755);
-                if (!status) { 
-                    task = 1;
-                } else { 
-                    lit_error(ERR_LIBC,
-"Unable to create directory \"%s\"!", output);
+				if (status != 0) {
+                    lit_error(ERR_LIBC, "Unable to create directory \"%s\"!", output);
                 }
-            } else {
-                task = 2; 
             }
         } else if (errno == ENOTDIR) {
-            fprintf(stderr,"Cannot make directory \"%s\" -- "
-                " a file already exists!\n", output);
+            fprintf(stderr,"Cannot make directory \"%s\" -- a file already exists!\n", output);
             exit(-1);
         }else {
             lit_error(ERR_LIBC,"stat() failed unexpectedly");
@@ -179,35 +162,31 @@ int explode(char * litPath, char * outputPath)
 				strcat_s(path, strlen(path) + 1,  "/");
                 output = path;
             }
-            task = 1;
         }
         else {
             status = -1;
-            fprintf(stderr,"Output file \"%s\" already exists. "
-                "Delete it first!\n", output);
-            task = 0;
+            fprintf(stderr,"Output file \"%s\" already exists. Delete it first!\n", output);
+
         }
     }
 
-    if (task == 1) {
-        status = explode_lit(&lit, filename, output);            
-        if (status != 0) {
-            if (status > 0) {
-                printf("Finished exploding \"%s\", but with errors.",
-                    filename);
-            }
-        }    
-        else {
-            printf("Exploded \"%s\" into \"%s\".\n", filename, output);
+    status = explode_lit(&lit, fileName, output);            
+    if (status != 0) {
+        if (status > 0) {
+            printf("Finished exploding \"%s\", but with errors.", fileName);
         }
+    }    
+    else {
+        printf("Exploded \"%s\" into \"%s\".\n", fileName, output);
     }
-    if (task && status)
+    
+    if ( status != 0 )
     {
         if (!printed_error) {
-            lit_error(ERR_R,
-"Encountered an error, but didn't print a message! Bad programmer!");
+            lit_error(ERR_R, "Encountered an error, but didn't print a message! Bad programmer!");
         }
     }
+
     lit_close(&lit);
     if (path) free(path);
     return status;
@@ -240,15 +219,12 @@ U8 * readat(void * v, U32 offset, int size)
     read_size = fread(mem, 1, size, f);
     if (read_size != size) {
         if (feof(f))  {
-		fprintf(stderr,
-"\nWARNING: Read went past the end of file by %d bytes. \n"\
-"If the conversion process doesn't work, try to redownload the file.\n",
-			size - read_size);
+		fprintf(stderr,"\nWARNING: Read went past the end of file by %d bytes. \n"\
+"If the conversion process doesn't work, try to redownload the file.\n", size - read_size);
 		return mem;
 	}
         free(mem);
-        lit_error(ERR_LIBC|ERR_R,"Unable to read %d chars at position %ld.",
-            size, offset);
+        lit_error(ERR_LIBC|ERR_R,"Unable to read %d chars at position %ld.", size, offset);
         return NULL;
     }
     return mem;
@@ -275,13 +251,11 @@ void DisplayErrorText( DWORD dwLastError ) {
         DWORD dwFormatFlags = FORMAT_MESSAGE_ALLOCATE_BUFFER |
                 FORMAT_MESSAGE_IGNORE_INSERTS |
                 FORMAT_MESSAGE_FROM_SYSTEM;
-        if(dwBufferLength = FormatMessageA(dwFormatFlags, NULL,
-            dwLastError, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-            (LPSTR) &MessageBuffer, 0, NULL)) {
-            DWORD dwBytesWritten;
-
-            WriteFile( GetStdHandle(STD_ERROR_HANDLE), MessageBuffer,
-                dwBufferLength, &dwBytesWritten, NULL);
+        if(dwBufferLength = FormatMessageA(dwFormatFlags, NULL, dwLastError, 
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR) &MessageBuffer, 0, NULL)) {
+            
+			DWORD dwBytesWritten;
+            WriteFile( GetStdHandle(STD_ERROR_HANDLE), MessageBuffer, dwBufferLength, &dwBytesWritten, NULL);
             LocalFree(MessageBuffer);
         }
 }
@@ -301,12 +275,15 @@ void lit_error(int what, char * fmt, ...) {
 #endif
 
     if (!windowed_mode) {
-        if (((what & ERR_RW) == ERR_R) && readingFilename)
-            fprintf(stderr,"Error reading file \"%s\" -- \n\t",
-                readingFilename);
-        if (((what & ERR_RW) == ERR_W) && writingFilename)
-            fprintf(stderr,"Error writing file \"%s\" -- \n\t",
-                writingFilename);
+		
+		if (((what & ERR_RW) == ERR_R) && readingFilename) {
+			fprintf(stderr, "Error reading file \"%s\" -- \n\t", readingFilename);
+		}
+
+		if (((what & ERR_RW) == ERR_W) && writingFilename) {
+			fprintf(stderr, "Error writing file \"%s\" -- \n\t", writingFilename);
+		}
+
         vfprintf(stderr,fmt, ap);
         printf("\n");
 
