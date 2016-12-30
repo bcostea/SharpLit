@@ -58,7 +58,7 @@ char * lit_i_strmerge(const char * first, ...)
     s = first;
     va_start(ap, first);
     do {
-        strcpy(ptr, s);
+        strcpy_s(ptr, strlen(s), s);
         ptr += strlen(ptr);
         s = va_arg(ap, char *);
     } while (s);

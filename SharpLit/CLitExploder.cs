@@ -1,9 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Runtime.InteropServices;
 
-
-namespace CLitWrapper
+namespace SharpLit
 {
     public class CLitExploder
     {
