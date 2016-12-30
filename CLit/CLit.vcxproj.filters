@@ -150,7 +150,6 @@
   <ItemGroup>
     <None Include="COPYING" />
     <None Include="lib\libtommath.la" />
-    <None Include="bin\libtommath-0.dll" />
     <None Include="ext\tom\LICENSE" />
   </ItemGroup>
   <ItemGroup>

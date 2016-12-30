@@ -167,7 +167,6 @@
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="bin\libtommath-0.dll" />
     <None Include="COPYING" />
     <None Include="ext\tom\LICENSE" />
     <None Include="lib\libtommath.la" />
