@@ -120,8 +120,8 @@ lit_atom_list * lit_read_atoms(lit_file * litfile, char * content_name)
                 len);
             break;
         }
-        strncpy_s(s, strlen(s), p + 1, len);
-        s[len] = '\0';
+		strncpy(s, p + 1, len);		
+		s[len] = '\0';
 
         list->atom_names[idx++] = s; 
 
@@ -183,8 +183,8 @@ lit_atom_list * lit_read_atoms(lit_file * litfile, char * content_name)
                 len);
             break;
         }
-        strncpy_s(s, strlen(s), p, len);
-        s[len] = '\0';
+		strncpy(s, p, len);		
+		s[len] = '\0';
 
         list->attrmap[idx].name = s;
         list->attrmap[idx].id = idx + 1;

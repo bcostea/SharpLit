@@ -142,9 +142,9 @@ int get_next_key(char * private_key_ptr, char * modulus_ptr)
                 *p = '\0';
                 if ((!pKey) || (pModulus)) {
                     if (pModulus && (p - pModulus) > 1) {
-                        strcpy_s(private_key_ptr, strlen(pKey), pKey);
-                        strcpy_s(modulus_ptr, strlen(pModulus), pModulus);
-                        pKey = p+1; pModulus = NULL;
+						strcpy(private_key_ptr, pKey);		                        
+						strcpy(modulus_ptr, pModulus);		
+						pKey = p+1; pModulus = NULL;
                         return 1;
                     }
                     pKey = p+1; pModulus = NULL;
@@ -166,9 +166,9 @@ int get_next_key(char * private_key_ptr, char * modulus_ptr)
             remaining--;
         }
         if (pKey && pModulus) {
-            strcpy_s(modulus_ptr, strlen(pModulus), pModulus);
-            strcpy_s(private_key_ptr, strlen(pKey), pKey);
-            pModulus = pKey = NULL; 
+			strcpy(modulus_ptr, pModulus);		
+			strcpy(private_key_ptr, pKey);
+			pModulus = pKey = NULL;
             /* Next time, we come through, and skip this fork */
             return 1; 
         }

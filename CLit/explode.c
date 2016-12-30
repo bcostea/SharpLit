@@ -439,8 +439,8 @@ char * get_opf_name(char * pathOutput, char * litname)
     if (strncasecmp(&litname[len-4],".lit",4) == 0) {
         str = strmerge(pathOutput,&litname[idx],NULL);
         if (!str) return str;
-        strcpy_s(&str[strlen(str)-3], 3, "opf");
-        return str;
+		strcpy(&str[strlen(str) - 3], "opf");		
+		return str;
     } 
     return strmerge(pathOutput,&litname[idx],".opf");
 }
