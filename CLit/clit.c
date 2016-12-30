@@ -38,6 +38,7 @@
 #endif
 
 #include "ext/litlib.h"
+#include "explode.h"
 
 
 extern int drm5_callback(void *, U8 *, int size);
@@ -52,10 +53,6 @@ extern int drm5_callback(void *, U8 *, int size);
 #define MAX_PATH PATH_MAX
 #endif
 
-/*extern int display_lit(lit_file * litfile, int public_only);
-extern int explode_lit(lit_file * litfile, char * litName, char * pathOutput);
-extern int transmute_lit(lit_file * litfile, char * newlitfile, char * );
-*/
 static U8 * readat(void * v, U32 offset, int size);
 /* Must not be static, linked into litlib */
 void lit_error(int what, char * fmt, ...); 
@@ -69,44 +66,8 @@ char   dir_program[MAX_PATH];
 char   dir_lit_file[MAX_PATH];
 char * key_file = NULL;
 
-const char * sTitle = 
-"+---[ ConvertLIT (Version 1.8) ]---------------"\
-"[ Copyright (c) 2002,2003 ]---\n"\
-"ConvertLIT comes with ABSOLUTELY NO WARRANTY; for details\n"\
-"see the COPYING file or visit \"http://www.gnu.org/license/gpl.html\". \n"\
-"This is free software, and you are welcome to redistribute it under \n"\
-"certain conditions.  See the GPL license for details.\n";
 
-const char * sUsage = \
-"\nThis program has three modes of operation: \n"\
-"First, is ** EXPLOSION **, or the expanding of a .LIT file into an \n"\
-"OEBPS compliant package.  \n"\
-"To explode, you type: clit <flags> <litfile.lit> <directory to explode into>\\\n"\
-"For Example:\n"\
-"\tclit ebook-propietary.lit ebook-oebps\\   \n"\
-"If the directory does not exist, you MUST put a trailing \\ or / after it!\n"\
-"\nTo disable creating multiple subdirectories, use the \"-d\" flag.\n"\
-"\nSecond, is the DOWNCONVERTING of a .LIT file down to \"Sealed\", \n"\
-"or DRM1 format for reading on handheld devices. \n"\
-"To downconvert, you type:  clit <flags> <litfile.lit> <newlitfile.lit> \n"\
-"For Example:\n"\
-"\tclit \"drm5 ebook.lit\" ebook-open.lit\n"\
-"\nThird, is the INSCRIBING of a .LIT file which allows you to label \n"\
-"your ebooks. This is very similar to downconverting, you just add \n"\
-"a third argument: clit <flags> <litfile.lit> <newlitfile.lit> <inscription> \n"\
-"For example: \n"\
-"\tclit ebook.lit inscribed.lit \"the Library of Basil "\
-"Frankweiler\"\n"\
-"\nDRM5 is supported if you have a \"keys.txt\" file that contains\n"\
-"the private key(s) for your passport(s) in either the CLIT program\n"\
-"directory or the current directory. \n"\
-"Use the -k<keyfile> flag to force the location of your keys.txt\n\n"\
-"This is a tool for **YOUR OWN FAIR USE** and not for stealing \n"\
-"other people's ebooks.\n"\
-"\nPlease do not use this program to distrbute illegal copies of ebooks.\n"\
-"\t... that would make Baby Jesus sad.\n";
-
-int main(int argc, char ** argv)
+int explode(char * litPath, char * outputPath)
 {
     int         status;
     char        * path = NULL;
@@ -120,46 +81,14 @@ int main(int argc, char ** argv)
 	errno_t err;
 
     /* Save the current directory for later */
-    strncpy_s(dir_program, MAX_PATH, argv[0], MAX_PATH-1);
+    strncpy_s(dir_program, MAX_PATH, litPath, MAX_PATH-1);
     for (i = strlen(dir_program); i >= 0; i--) {
         if ((dir_program[i] == '/') || (dir_program[i] == '\\'))  {
             dir_program[i+1] = '\0'; break;
         }
     }
-    printf(sTitle);
-    if (argc < 3) { 
-        printf(sUsage);
-        return -1;
-    }
-    base = 1;
-    while ((argv[base][0] == '-') && (!done_args)) {
-        int i;
 
-        for (i = 1; i < (int)strlen(argv[base]); i++) {
-            switch (argv[base][i]) {
-            case 'd':
-            case 'D':
-                disable_directory_support = 1;
-                break;
-            case 'k':
-            case 'K':
-                key_file = &argv[base][i+1];
-                i = 0;
-                break;
-            case '-':
-                done_args = 1;
-            }
-            if (!i) break;
-        }
-        base++;
-    }
-    base--;
-
-    inscription = NULL;
-    if (argc == (4+base)) {
-        inscription = argv[base+3];
-    }
-    filename = argv[base+1];
+    filename = litPath;
 
     strncpy_s(dir_lit_file, MAX_PATH, filename, MAX_PATH-1);
     for (i = strlen(dir_lit_file); i >= 0; i--) {
@@ -168,7 +97,7 @@ int main(int argc, char ** argv)
         }
     }
 
-    output = argv[base+2];
+    output = outputPath;
     readingFilename = filename;
 
     err = fopen_s(&fh, filename, "rb");
@@ -190,6 +119,7 @@ int main(int argc, char ** argv)
         lit_close(&lit);
         exit(-1);
     }
+
     printf("LIT INFORMATION.........\n");
     if (lit.drmlevel >= 0) 
         printf("DRM         =  %d    \n", lit.drmlevel);
@@ -258,6 +188,7 @@ int main(int argc, char ** argv)
             task = 0;
         }
     }
+
     if (task == 1) {
         status = explode_lit(&lit, filename, output);            
         if (status != 0) {
@@ -269,15 +200,7 @@ int main(int argc, char ** argv)
         else {
             printf("Exploded \"%s\" into \"%s\".\n", filename, output);
         }
-    } else if (task == 2) {
-        status = transmute_lit(&lit, output, inscription);
-        if (status != 0) {
-            printf("<><><><><> FAILED TO %s \"%s\"!",
-                (inscription)?"INSCRIBE":"CONVERT",filename);
-        } else {
-            printf("Converted \"%s\" --> \"%s\".\n", filename, output);
-        }
-    }     
+    }
     if (task && status)
     {
         if (!printed_error) {

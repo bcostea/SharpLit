@@ -28,6 +28,7 @@
 #include "ext/litlib.h"
 #include "manifest.h"
 #include "utils.h"
+#include "explode.h"
 
 #ifdef _MSC_VER
 #include <direct.h>

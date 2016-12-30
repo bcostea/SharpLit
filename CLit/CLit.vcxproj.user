@@ -6,5 +6,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerCommandArguments>x:\clit\5_stories.lit x:\clit\target\</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerDebuggerType>Mixed</LocalDebuggerDebuggerType>
+    <LocalDebuggerAttach>true</LocalDebuggerAttach>
   </PropertyGroup>
 </Project>
